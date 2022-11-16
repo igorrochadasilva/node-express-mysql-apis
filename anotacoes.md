@@ -169,3 +169,166 @@ muito complexas
 - Inicializando pastas com sequelize: `npx sequelize-cli init`
 - Exportar modulos da pasta database para não ser preciso rodar comandos do sequelize-cli na pasta database.
 - Criado migration `criar usuários` para criação de tabela
+
+## Usuário e criptografia de senhas
+
+**Entidade de Usuário - Criar, Retornar Todos E Retornar Por Id**
+
+- Criando entidade de usuário
+- Definindo controller de usuário.
+- Definindo repository de usuário
+- Definindo router de usuário
+- Definindo service de usuário
+- Criando consulta por id de usuário
+- Criando consulta todos os usuário
+- Criando registrar novo usuário
+
+**Criptografando a Senha dos Usuários**
+
+- Instalando library `bcrypt`
+- Utilizando bcrypt para criptografa senha
+
+## Middlewares
+
+**Middleware - 404 Not Found**
+
+- Criando middleware de não dar erro quando não existir rota
+- Middlewares são funções que adicionamos em nossa cadeia de chamadas que atendam determinado cenário
+
+**Middleware - Tratamento de erros**
+
+- Criação de middleware para tratamento de todos os erros.
+- Instalado http-errors
+- Utiliando o `next` avança para o proximo middleware.
+- adicionando try catch nos controllers para caso ocorra erro chamar o proximo middleware com o `next`
+- No service usuarios, criando validações para regra de negocios
+
+  **Middleware - Validando a request**
+
+  - Capiturando erros de propriedades invalidas e informando o erro.
+  - Criando pasta validators e utils
+  - Criando funções no utils para retornar mensagem de erro.
+  - Criando validators com librabry `express-validators` para retornar mensagem para propries
+  - Adicionando middleware especificamente para uma rota.
+
+## Finalizando entidade de usuário
+
+**Atualizando o usuário**
+
+- Criando função `atualizar` no repositorio de `usuario` utilizando `update` do sequelize, identificando por id.
+- Criando validações no `usuario.validator` para validar propriedade `nome` e `id`.
+- Criando função `atualizar` no `service` para validar se o usuário existe.
+- Criado função de `atualizar` no controller do `usuário`
+
+**Deleção de usuário com paranoid**
+
+- Adicionando `paranoid` no `usuario model`, com isso, quando é deletado o registro e registrado na coluna `deletedAt`, caso tente buscar o registro não é retornado, pelo fato de estar usando o `paranoid`
+- Criado função de `deletar` no `usuário repository`
+- Criado função de `deletar` no `usuário service` e fazer validação de usuário existe
+- Criado função de `deletar` no `usuario controler` e validar.
+- Criando `validator` que validara id.
+- Obs: sem o `paranoid` o registro seria realmente deletado.
+
+## Login e Verificando usuário logado
+
+**Login do usuário**
+
+- Instalando `npm i jsonwebtoken`
+- Criando `login validator`
+- Criando `login service` onde valida se `usuario` existe e utiliza o `bcrypt.compare` para validar senhas criptografadas.
+- Adiciona nova variavel de ambiente `SECRET` que irá criptografa o token.
+- Criado token com o `sign` do jsonwebtoken e retornar usuário e token caso sucesso.
+- Criado função `login` no controller e validando erros.
+
+**Middleware - Verificando usuário logado**
+
+- Criando middleware authorization.
+- Criado função `verifyJWT` que valida se token existe com o `verify` do `jsonwebtoken`.
+- Passado middleware `verifyJWT` para rotas de usuário, agora somente com o token no header é possivel utilizar as rotas `encontrarTodos`, `encontrarPorId`, `atualizar`, `deletar`
+
+## Itens, entradas e saidas
+
+**Criando a migration de Item**
+
+- Criando migration `npx sequelize-cli model:generate --name Item --attributes nome:string,quantidade:integer`
+- Configurado model de `item`
+- Associado `usuario_id` com `usuario`
+- Adicionado `paranoid`
+
+**CRUD de itens**
+
+- Criado fução `criar, atualizar, encontrarTodos, encontrarPorId, encontrarUmPorWhere e deletar` no `repository item`
+- Criado `item validator` para cada ação da api itens
+- Criado `item service`, e funções `criar, atualizar, encontrarTodos, encontrarPorId, encontrarUmPorWhere e deletar`
+- Criado `item controller` e funções `criar, atualizar, encontrarTodos, encontrarPorId, encontrarUmPorWhere e deletar`
+- Passando usuario id que foi inserido por middleware.
+- Criado `item router`
+
+**Criando a migration de entradas**
+
+- Criando migration para tabela de entradas `npx sequelize-cli model:generate --name Entrada --attributes quantidade: integer`, as entradas serão adição de itens
+- Criado associção de model item utilizando foreingKey
+- Rodando `npx sequelize-cli db:migrate` para criação de tabelas
+
+**Criando migration de saida**
+
+- Criando migration para tabela de entradas `npx sequelize-cli model:generate --name Saida --attributes quantidade: integer`, as entradas serão saida de itens
+- Criado associção de model item utilizando foreingKey
+- Rodando `npx sequelize-cli db:migrate` para criação de tabelas
+
+**Cadastrando e retornando entradas**
+
+- Criando `entrada.validator`
+- Criando `entrada.repository` e funções `criar,encontrarTodos, encontrarPorId`
+- Criando `entrada.service` e funções `criar,encontrarTodos, encontrarPorId`
+- Criando `entrada.controller` e funções `criar,encontrarTodos, encontrarPorI`
+
+**Corrigindo o Model de saída**
+
+- Corrigindo `association` do model de saida
+
+**Cadastrando e retornando as saídas**
+
+- Criando `saida.repository` e funções `criar,encontrarTodos, encontrarPorId`
+- Criando `saida.service` e funções `criar,encontrarTodos, encontrarPorId`
+- Criando `saida.validator` e funções `criar,encontrarTodos, encontrarPorId`
+- Criando `saida.controller` e funções `criar,encontrarTodos, encontrarPorI`
+
+## Fornecedor e Relatórios
+
+**SQL da consulta de relatórios**
+
+- introdução.
+
+**Gerando planilhas de relatórios com ExcelJS**
+
+- Instalando library exceljs
+- Criado `item-reporty.repository`.
+- Criando `item-reporty.service` e funções `criarXLsx` para criação de relatorio
+- Criando `item-reporty.controller` e funções `xlsx` para criação de relatorio
+- Criando `item-reporty.route`
+
+**Migration de Fornecedor**
+
+- Criando migraiton fornecedor `npx sequelize-cli model:generate --name Fornecedor --attributes: nome:string,telefone:string,email:string`
+
+- Rodando migration: `npx sequelize-cli db:migrate`
+
+**CRUD de fornecedor**
+
+- Criando `saida.repository` e funções de cada rota.
+- Criando `saida.service` e funções de cada rota.
+- Criando `fornecedor.validator` e validações de parametros de cada função.
+- Criando `saida.controller` e funções de cada rota.
+- Criado rota `fornecedor.route`
+
+**Adicionando fornecedor_id na tabela de entrada**
+
+- Adicionando nova coluna na tabela de entrada `npx sequelize-cli migration: generate --name add-fornecedor-id-column`
+- Configurando migration pada adição de coluna ou remoção.
+- Adicionando assoction no model entrada
+
+**Adicionando atributo no crud de entradas**
+
+- Adicionando novo atributo `fornecedor_id` no `entrada.validator`
+- Adicionando model de fornecedor no `entrada.validator`
